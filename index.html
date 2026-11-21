@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skin Repair Lab — a tissue engineering explorer</title>
+<style>
+:root{--ink:#183b3a;--muted:#5b7470;--paper:#f7f8f2;--card:#fffefa;--mint:#dceee4;--green:#27695d;--coral:#e98979;--rose:#f2c3b8;--line:#dce5dc;--gold:#e7bd6b;--blue:#6b91a8}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:22px max(24px,calc((100vw - 1120px)/2));display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.brand{font-weight:750;letter-spacing:.01em;display:flex;gap:10px;align-items:center}.brand-mark{display:grid;place-items:center;width:34px;height:34px;background:#d9ebe2;border-radius:12px;color:var(--green);font-size:20px}
+.tag{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--green);font-weight:750}
+main{max-width:1120px;margin:auto;padding:58px 24px 72px}
+.intro{max-width:720px;margin-bottom:30px}.intro h1{font-size:clamp(36px,6vw,58px);line-height:1.02;letter-spacing:-.045em;margin:12px 0 18px}.intro p{font-size:18px;color:var(--muted);max-width:660px;margin:0}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:stretch}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:0 10px 30px #183b3a0a}
+.panel h2{font-size:20px;margin:0 0 6px;letter-spacing:-.02em}.sub{color:var(--muted);margin:0 0 22px;font-size:14px}
+.visual{min-height:265px;border-radius:18px;background:#f3f5eb;padding:22px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.visual-label{position:absolute;top:14px;left:18px;color:var(--muted);font-size:12px;font-weight:700}
+.skin{height:144px;position:relative;margin-top:26px}
+.layer{position:absolute;left:0;right:0;border-radius:12px}.layer span{position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:2;color:#754f45;font-size:11px;line-height:1.1;font-weight:750;white-space:nowrap}.layer.top span{font-size:10px}.layer.base span{color:#75613c}
+.layer.top{top:0;height:30px;background:#e6a58d;border:5px solid #f3c4aa}
+.layer.dermis{top:29px;height:89px;background:#f4d5c7;border:2px solid #edc1b2}
+.layer.base{top:104px;height:40px;background:#f4e6c6;border:2px solid #ead9ab}
+.wound{position:absolute;top:-1px;left:39%;width:22%;height:102px;z-index:3;background:#fffefa;border-radius:0 0 48% 48%;border:2px dashed #cc8c7b;border-top:0;overflow:hidden;transition:width .9s cubic-bezier(.2,.75,.25,1),left .9s cubic-bezier(.2,.75,.25,1)}
+.repair{position:absolute;bottom:0;left:0;width:100%;height:30%;background:linear-gradient(0deg,#de927f,#efb5a4);border-radius:0 0 48% 48%;transition:height 1.1s cubic-bezier(.2,.75,.25,1),background-color .8s ease}
+.skin[data-phase="hemostasis"] .repair{background:linear-gradient(0deg,#d6aa62,#edd698)}
+.skin[data-phase="inflammation"] .repair{background:linear-gradient(0deg,#d9997f,#f0c0aa)}
+.cell{position:absolute;width:11px;height:11px;background:#4b8a74;border:2px solid #d4eee0;border-radius:50%;z-index:4;transition:transform 1.2s cubic-bezier(.18,.75,.25,1),opacity .7s ease,scale .7s ease;box-shadow:0 1px 3px #183b3a2a}
+.cell.c1{left:24%;top:49px}.cell.c2{left:30%;top:77px}.cell.c3{left:70%;top:47px}.cell.c4{left:76%;top:77px}.cell.c5{left:35%;top:102px}.cell.c6{left:65%;top:101px}.cell.c7{left:36%;top:57px}.cell.c8{left:64%;top:57px}
+.skin[data-phase="proliferation"] .cell.migrate-left{transform:translate(24px,-5px)}
+.skin[data-phase="proliferation"] .cell.migrate-right{transform:translate(-24px,-5px)}
+.skin[data-phase="remodeling"] .cell{opacity:.48;scale:.85}
+.skin[data-phase="hemostasis"] .cell.near-wound,.skin[data-phase="inflammation"] .cell.near-wound{opacity:.55}
+.legend{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:14px;color:var(--muted);font-size:12px}.legend-title{width:100%;font-weight:750;color:var(--ink)}.legend-item{display:flex;align-items:center;gap:7px}.key-dot{width:10px;height:10px;background:#4b8a74;border:2px solid #d4eee0;border-radius:50%;display:inline-block;flex:none}.key-fill{width:13px;height:10px;background:#e9a594;border-radius:4px;display:inline-block;flex:none}
+.dial{padding:17px 0;border-bottom:1px solid var(--line)}.dial:last-of-type{border:0}
+.dial-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}.dial label{font-weight:700}.dial output{color:var(--green);font-weight:750;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--green);margin:13px 0 3px}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.result{margin-top:20px;background:#eaf3ec;border-radius:16px;padding:17px 18px;display:flex;gap:13px;align-items:flex-start}
+.result-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;background:#d2e7da;color:var(--green);font-weight:800;flex:none}
+.result strong{display:block;margin:0 0 2px}.result p{margin:0;color:var(--muted);font-size:14px}
+.note{margin-top:20px;padding:14px 16px;border-left:3px solid var(--gold);background:#fff8e9;border-radius:0 12px 12px 0;color:#6e6043;font-size:13px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.step{border:1px solid var(--line);background:#fffefa;border-radius:18px;padding:18px}.step b{display:block;font-size:13px;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}.step p{margin:0;font-size:14px;color:var(--muted)}
+.phase-section,.gene-section{margin-top:24px}
+.phase-track{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.phase-button{appearance:none;text-align:left;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px 14px;color:var(--ink);font:inherit;transition:background-color .25s ease,border-color .25s ease,transform .25s ease}
+.phase-button:hover{transform:translateY(-2px);border-color:#9fc2b0}.phase-button[aria-pressed="true"]{background:#eaf3ec;border-color:#8db6a0;box-shadow:inset 0 0 0 1px #8db6a0}
+.phase-button strong{display:block;font-size:14px}.phase-button small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.phase-summary{margin-top:16px;padding:16px 18px;border-radius:16px;background:#f2f5ed;min-height:90px;transition:opacity .25s ease,transform .25s ease}
+.phase-summary.is-changing{opacity:.45;transform:translateY(4px)}
+.phase-summary strong{font-size:16px}.phase-summary p{color:var(--muted);margin:4px 0 0;font-size:14px}
+.phase-actions,.gene-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.button{border:0;border-radius:999px;padding:11px 17px;background:var(--green);color:white;font-family:inherit;font-size:13px;font-weight:700;line-height:1.2;cursor:pointer;transition:background-color .2s ease,transform .2s ease}
+.button:hover{background:#1c554c;transform:translateY(-1px)}.button.secondary{background:#e7eee7;color:var(--ink)}.button.secondary:hover{background:#dce9df}
+.button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.small-note{font-size:12px;color:var(--muted)}
+.gene-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.fictional-tag{display:inline-flex;border-radius:999px;background:#f0eee2;color:#77653d;padding:6px 10px;font-size:10px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
+.gene-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:stretch}
+.gene-scene{min-height:260px;position:relative;background:#eef3f1;border-radius:18px;padding:45px 18px 20px;overflow:hidden}
+.gene-caption{position:absolute;left:17px;top:13px;color:var(--muted);font-size:10px;letter-spacing:.1em;font-weight:750}
+.dna-ladder{position:absolute;left:8%;right:8%;top:102px;height:70px}
+.dna-row{position:absolute;left:0;right:0;display:grid;grid-template-columns:repeat(12,1fr);height:28px;align-items:center;text-align:center;border-top:4px solid #6189a0;border-bottom:4px solid #6189a0;color:#456477;font-size:11px;font-weight:750;letter-spacing:.03em;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(8.333% - 1px),#9cb8c5 calc(8.333% - 1px),#9cb8c5 8.333%)}
+.dna-row.top{top:0}.dna-row.bottom{bottom:0;border-color:#8d7b9d;color:#64546f}
+.target-zone{position:absolute;left:33.3%;width:33.3%;top:-8px;height:88px;border:2px solid #d58c7e;background:#efb5a421;border-radius:10px;opacity:.55;transition:opacity .4s ease,box-shadow .4s ease}
+.pam-chip{position:absolute;left:66.7%;top:-27px;background:#f2d79a;color:#725d2c;border-radius:7px;padding:2px 7px;font-size:10px;font-weight:800;transition:transform .35s ease,box-shadow .35s ease}
+.cas-complex{position:absolute;left:0;top:-66px;width:126px;min-height:48px;border-radius:22px 22px 16px 16px;background:#27695d;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 18px #183b3a2c;z-index:3;transition:left 1.05s cubic-bezier(.18,.75,.2,1),top .55s ease,transform .55s ease}
+.cas-complex strong{font-size:13px;line-height:1.1}.cas-complex small{font-size:9px;color:#d9eee4;margin-top:2px}
+.guide-tail{position:absolute;left:50%;top:40px;width:2px;height:28px;background:#9f6f9d;transform:rotate(12deg);transform-origin:top;opacity:0;transition:opacity .4s ease,height .4s ease}
+.cut-mark{position:absolute;left:49%;top:-7px;height:87px;width:4px;background:#c5574e;border-radius:4px;transform:rotate(18deg) scaleY(.15);opacity:0;z-index:4;transition:opacity .4s ease,transform .55s cubic-bezier(.2,.75,.25,1)}
+.cut-mark span{position:absolute;top:-17px;left:-15px;color:#a9443d;font-size:10px;font-weight:800;white-space:nowrap}
+.repair-flash{position:absolute;left:34%;right:34%;top:-15px;height:100px;background:#f3cf7740;border-radius:18px;opacity:0;transition:opacity .7s ease}
+.gene-scene[data-step="1"] .cas-complex{left:16%}
+.gene-scene[data-step="2"] .cas-complex{left:36%;top:-72px}
+.gene-scene[data-step="2"] .target-zone,.gene-scene[data-step="3"] .target-zone{opacity:1;box-shadow:0 0 0 4px #e9897940}
+.gene-scene[data-step="2"] .pam-chip,.gene-scene[data-step="3"] .pam-chip{transform:translateY(-4px);box-shadow:0 3px 10px #c9953f55}
+.gene-scene[data-step="2"] .guide-tail,.gene-scene[data-step="3"] .guide-tail{opacity:1;height:32px}
+.gene-scene[data-step="3"] .cut-mark{opacity:1;transform:rotate(18deg) scaleY(1)}
+.gene-scene[data-step="3"] .cas-complex{transform:scale(1.05)}
+.gene-scene[data-step="4"] .cas-complex{left:36%;top:-72px;opacity:.65}
+.gene-scene[data-step="4"] .repair-flash{opacity:1}
+.ingredient-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.ingredient{border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:11px;background:#fff}
+.gene-explain{background:#f5f7f2;border:1px solid var(--line);border-radius:18px;padding:19px;display:flex;flex-direction:column;justify-content:center;min-height:220px}
+.gene-step-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--green);font-weight:800}
+.gene-explain h3{font-size:18px;margin:8px 0 6px}
+.gene-explain p{font-size:14px;color:var(--muted);margin:0}
+.gene-progress{height:5px;background:#dfe7df;border-radius:9px;margin-top:16px;overflow:hidden}.gene-progress span{display:block;height:100%;width:20%;background:var(--green);border-radius:9px;transition:width .65s cubic-bezier(.2,.75,.25,1)}
+.gene-steps{display:flex;gap:5px;margin-top:8px}.gene-steps i{height:4px;flex:1;border-radius:9px;background:#dfe7df;transition:background-color .3s ease}.gene-steps i.active{background:#4b8a74}
+.gene-actions{justify-content:space-between}
+.gene-safety{margin-top:16px;background:#fff8e9;border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:13px 16px;color:#6e6043;font-size:13px}
+footer{padding:20px 24px;text-align:center;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
+@media(max-width:760px){header{padding:16px 20px}main{padding:40px 18px 52px}.grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.panel{padding:20px}.visual{min-height:240px}.phase-track{grid-template-columns:repeat(2,1fr)}.gene-layout{grid-template-columns:1fr}.gene-heading{display:block}.fictional-tag{margin-top:10px}.gene-scene{min-height:235px}.dna-ladder{top:96px}.cas-complex{width:112px}.layer span{font-size:9px;left:8px}}
+@media(max-width:420px){.dna-row{font-size:9px}.phase-button{padding:11px 10px}.layer span{font-size:8px}.layer.top span{font-size:8px}.gene-scene{padding-left:12px;padding-right:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header><div class="brand"><span class="brand-mark" aria-hidden="true">✳</span> Skin Repair Lab</div><span class="tag">BME learning project</span></header>
+<main>
+<section class="intro">
+<div class="tag">Tissue engineering, explored</div>
+<h1>What helps skin<br>repair in this model?</h1>
+<p>Explore a simplified skin-repair illustration, then see how CRISPR-Cas9 can make a targeted DNA cut in a separate educational animation.</p>
+</section>
+
+<section class="grid" aria-label="Interactive skin repair model">
+<article class="panel">
+<h2>A simplified wound model</h2><p class="sub">Adjust the controls and watch the illustration respond.</p>
+<div class="visual" role="img" aria-label="Simplified skin cross-section showing epidermis, dermis, hypodermis, and fibroblasts">
+<span class="visual-label">SIMULATED TISSUE</span>
+<div class="skin" id="skin" data-phase="proliferation">
+<div class="layer top"><span>Epidermis · surface</span></div>
+<div class="layer dermis"><span>Dermis · support layer</span></div>
+<div class="layer base"><span>Hypodermis · subcutaneous layer</span></div>
+<div class="wound"><div class="repair" id="repair"></div></div>
+<span class="cell c1" aria-hidden="true"></span><span class="cell c2" aria-hidden="true"></span>
+<span class="cell c3" aria-hidden="true"></span><span class="cell c4" aria-hidden="true"></span>
+<span class="cell c5" aria-hidden="true"></span><span class="cell c6" aria-hidden="true"></span>
+<span class="cell c7 near-wound migrate-left" aria-hidden="true"></span><span class="cell c8 near-wound migrate-right" aria-hidden="true"></span>
+</div>
+</div>
+<div class="legend"><span class="legend-title">Illustration key</span><span class="legend-item"><i class="key-dot" aria-hidden="true"></i> Fibroblasts: green cells in the dermis; some move into the wound during proliferation</span><span class="legend-item"><i class="key-fill" aria-hidden="true"></i> Coral fill: simulated repair tissue</span></div>
+<div class="note"><strong>Educational model:</strong> the animation is a conceptual illustration, not biological data or a prediction of real wound healing.</div>
+</article>
+<article class="panel">
+<h2>Try changing the conditions</h2><p class="sub">These sliders are teaching controls for the illustration.</p>
+<div class="dial"><div class="dial-head"><label for="scaffold">Scaffold support</label><output id="scaffoldOut" for="scaffold">60%</output></div><input id="scaffold" type="range" min="0" max="100" value="60"><p class="hint">A scaffold is a structure researchers can study as support for cells.</p></div>
+<div class="dial"><div class="dial-head"><label for="nutrients">Nutrient supply</label><output id="nutrientsOut" for="nutrients">65%</output></div><input id="nutrients" type="range" min="0" max="100" value="65"><p class="hint">Cells need resources from their environment to carry out their functions.</p></div>
+<div class="result" aria-live="polite"><span class="result-icon">↗</span><div><strong id="resultTitle">Moderate simulated fill-in</strong><p id="resultText">In this teaching model, both support and nutrient supply contribute to the illustration.</p></div></div>
+</article>
+</section>
+
+<section class="panel phase-section" aria-labelledby="phaseHeading">
+<h2 id="phaseHeading">Follow a simplified repair timeline</h2>
+<p class="sub">Choose a stage to see how the illustration changes. In real wounds, these stages overlap.</p>
+<div class="phase-track" role="group" aria-label="Skin repair stages">
+<button class="phase-button" type="button" data-phase-button="hemostasis" aria-pressed="false"><strong>1 · Hemostasis</strong><small>A clot forms</small></button>
+<button class="phase-button" type="button" data-phase-button="inflammation" aria-pressed="false"><strong>2 · Inflammation</strong><small>Debris is cleared</small></button>
+<button class="phase-button" type="button" data-phase-button="proliferation" aria-pressed="true"><strong>3 · Proliferation</strong><small>Cells rebuild</small></button>
+<button class="phase-button" type="button" data-phase-button="remodeling" aria-pressed="false"><strong>4 · Remodeling</strong><small>Tissue reorganizes</small></button>
+</div>
+<div class="phase-summary" id="phaseSummary" aria-live="polite"><span class="tag" id="phaseKicker">Stage 3 of 4</span><strong id="phaseTitle"> Proliferation</strong><p id="phaseText">Fibroblasts from the dermis move into the wound and deposit extracellular matrix. Other cells, including keratinocytes, help cover the surface.</p></div>
+<div class="phase-actions"><button class="button" type="button" id="phasePlay">Play timeline</button><span class="small-note">Conceptual sequence only; timing and outcomes vary, and stages overlap.</span></div>
+</section>
+
+<section class="panel gene-section" aria-labelledby="geneHeading">
+<div class="gene-heading"><div><div class="tag">Inside the cell</div><h2 id="geneHeading">How CRISPR-Cas9 can cut DNA</h2><p class="sub">Step through a simplified animation of target finding, cutting, and cell repair.</p></div><span class="fictional-tag">Generic DNA · not a real target</span></div>
+<div class="gene-layout">
+<div>
+<div class="gene-scene" id="geneScene" data-step="0" role="img" aria-label="Conceptual animation of Cas9 and guide RNA approaching a generic DNA ladder">
+<span class="gene-caption">DNA SHOWN STRAIGHTENED FOR CLARITY</span>
+<div class="dna-ladder">
+<div class="dna-row top"><span>A</span><span>T</span><span>G</span><span>C</span><span>A</span><span>T</span><span>G</span><span>C</span><span>A</span><span>T</span><span>G</span><span>C</span></div>
+<div class="dna-row bottom"><span>T</span><span>A</span><span>C</span><span>G</span><span>T</span><span>A</span><span>C</span><span>G</span><span>T</span><span>A</span><span>C</span><span>G</span></div>
+<div class="target-zone" aria-hidden="true"></div><span class="pam-chip">PAM</span>
+<div class="repair-flash" aria-hidden="true"></div>
+<div class="cas-complex"><strong>Cas9</strong><small>with guide RNA</small><i class="guide-tail" aria-hidden="true"></i></div>
+<div class="cut-mark" aria-hidden="true"><span>cut</span></div>
+</div>
+</div>
+<div class="ingredient-row"><span class="ingredient"><strong>Cas9</strong> · nuclease enzyme</span><span class="ingredient"><strong>Guide RNA</strong> · target-finding RNA</span><span class="ingredient"><strong>Cell proteins</strong> · repair the break</span><span class="ingredient"><strong>PAM</strong> · short DNA motif Cas9 checks</span></div>
+</div>
+<aside class="gene-explain" aria-live="polite">
+<span class="gene-step-label" id="geneStepLabel">Step 1 of 5</span>
+<h3 id="geneStepTitle">Cas9 carries a guide</h3>
+<p id="geneStepText">Cas9 is a DNA-cutting enzyme. A guide RNA associates with it and can base-pair with a matching DNA region.</p>
+<div class="gene-progress" aria-hidden="true"><span id="geneProgress"></span></div>
+<div class="gene-steps" aria-hidden="true"><i class="active"></i><i></i><i></i><i></i><i></i></div>
+</aside>
+</div>
+<div class="gene-actions"><button class="button" type="button" id="genePlay">Play animation</button><div><button class="button secondary" type="button" id="genePrev" disabled>Back</button> <button class="button secondary" type="button" id="geneNext">Next</button></div></div>
+<div class="gene-safety"><strong>What the enzyme labels mean:</strong> Cas9 contains two nuclease domains, commonly called HNH and RuvC, that cut opposite DNA strands. The guide RNA is not an enzyme. After the cut, the cell’s own repair proteins handle the DNA break; different repair routes can produce different outcomes.</div>
+</section>
+
+<section class="steps" aria-label="Research context">
+<div class="step"><b>1 · Cells</b><p>Researchers study which cells take part in repair and how they behave.</p></div>
+<div class="step"><b>2 · Materials</b><p>Biomaterials can provide structures that researchers investigate as tissue support.</p></div>
+<div class="step"><b>3 · Evidence</b><p>Real regenerative medicine requires careful experiments and evidence at each stage.</p></div>
+</section>
+</main>
+<footer>A student learning prototype · Simplified for exploration · Not medical advice</footer>
+<script>
+const scaffold = document.querySelector("#scaffold");
+const nutrients = document.querySelector("#nutrients");
+const repair = document.querySelector("#repair");
+const skin = document.querySelector("#skin");
+const title = document.querySelector("#resultTitle");
+const text = document.querySelector("#resultText");
+const phaseInfo = {
+  hemostasis: {number:1,title:"Hemostasis",text:"A clot forms to limit bleeding and provides a temporary matrix. This response begins quickly after injury.",factor:.18},
+  inflammation: {number:2,title:"Inflammation",text:"Immune cells help clear debris and send signals. This stage overlaps with the rebuilding process.",factor:.28},
+  proliferation: {number:3,title:"Proliferation",text:"Fibroblasts from the dermis move into the wound and deposit extracellular matrix. Other cells, including keratinocytes, help cover the surface.",factor:.72},
+  remodeling: {number:4,title:"Remodeling",text:"The matrix is reorganized over time and cell activity changes. Repair may leave scar tissue; it does not always restore every original skin structure.",factor:.9}
+};
+let currentPhase = "proliferation";
+let phaseTimer = null;
+const phaseSummary = document.querySelector("#phaseSummary");
+
+function updateSimulation() {
+  const s = Number(scaffold.value), n = Number(nutrients.value);
+  document.querySelector("#scaffoldOut").value = s + "%";
+  document.querySelector("#nutrientsOut").value = n + "%";
+  const conditionFill = 16 + (s * .28) + (n * .28);
+  const fill = Math.round(conditionFill * phaseInfo[currentPhase].factor);
+  repair.style.height = fill + "%";
+  const spread = Math.max(12, 22 - fill * .055);
+  document.querySelector(".wound").style.width = spread + "%";
+  document.querySelector(".wound").style.left = (50 - spread / 2) + "%";
+  if (fill > 39) {
+    title.textContent = "More simulated fill-in";
+    text.textContent = "The illustration shows more gap fill under these teaching settings; this is a visual rule, not a measured biological result.";
+  } else if (fill > 22) {
+    title.textContent = "Some simulated fill-in";
+    text.textContent = "The illustration combines the selected stage with your scaffold and nutrient settings.";
+  } else {
+    title.textContent = "Less simulated fill-in";
+    text.textContent = "This illustration shows less gap fill under these teaching settings; real tissue repair is much more complex.";
+  }
+}
+function setPhase(phase, animate=true) {
+  currentPhase = phase;
+  skin.dataset.phase = phase;
+  document.querySelectorAll("[data-phase-button]").forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.phaseButton === phase));
+  });
+  const info = phaseInfo[phase];
+  if (animate) phaseSummary.classList.add("is-changing");
+  window.setTimeout(() => {
+    document.querySelector("#phaseKicker").textContent = "Stage " + info.number + " of 4";
+    document.querySelector("#phaseTitle").textContent = " " + info.title;
+    document.querySelector("#phaseText").textContent = info.text;
+    phaseSummary.classList.remove("is-changing");
+  }, animate ? 170 : 0);
+  updateSimulation();
+}
+scaffold.addEventListener("input", updateSimulation);
+nutrients.addEventListener("input", updateSimulation);
+document.querySelectorAll("[data-phase-button]").forEach(button => button.addEventListener("click", () => {
+  if (phaseTimer) { clearInterval(phaseTimer); phaseTimer = null; document.querySelector("#phasePlay").textContent = "Play timeline"; }
+  setPhase(button.dataset.phaseButton);
+}));
+document.querySelector("#phasePlay").addEventListener("click", event => {
+  const button = event.currentTarget;
+  if (phaseTimer) {
+    clearInterval(phaseTimer); phaseTimer = null; button.textContent = "Play timeline"; return;
+  }
+  const order = ["hemostasis","inflammation","proliferation","remodeling"];
+  let index = order.indexOf(currentPhase);
+  if (index === order.length - 1) { index = -1; }
+  button.textContent = "Pause timeline";
+  phaseTimer = setInterval(() => {
+    index += 1;
+    setPhase(order[index]);
+    if (index >= order.length - 1) {
+      clearInterval(phaseTimer); phaseTimer = null; button.textContent = "Replay timeline";
+    }
+  }, 2100);
+});
+setPhase("proliferation", false);
+
+const casSteps = [
+  {title:"Cas9 carries a guide",text:"Cas9 is a DNA-cutting enzyme. A guide RNA associates with it and can base-pair with a matching DNA region."},
+  {title:"The complex checks DNA",text:"PAM stands for protospacer adjacent motif: a short DNA sequence next to the target that Cas9 must recognize. The PAM is part of the DNA, not the guide RNA. Different Cas9 versions can require different PAMs."},
+  {title:"The guide matches its target",text:"At a compatible site, the guide RNA pairs with complementary DNA near the PAM. This diagram uses generic letters, not a real target."},
+  {title:"Cas9 cuts both strands",text:"Cas9’s HNH and RuvC nuclease domains cut opposite DNA strands, creating a double-strand break."},
+  {title:"The cell repairs the break",text:"The cell’s repair machinery takes over. End joining can introduce small changes; template-guided repair can copy from a matching template. Results vary."}
+];
+let casStep = 0;
+let casTimer = null;
+function setCasStep(step) {
+  casStep = Math.max(0, Math.min(casSteps.length - 1, step));
+  const scene = document.querySelector("#geneScene");
+  scene.dataset.step = casStep;
+  document.querySelector("#geneStepLabel").textContent = "Step " + (casStep + 1) + " of " + casSteps.length;
+  document.querySelector("#geneStepTitle").textContent = casSteps[casStep].title;
+  document.querySelector("#geneStepText").textContent = casSteps[casStep].text;
+  document.querySelector("#geneProgress").style.width = ((casStep + 1) / casSteps.length * 100) + "%";
+  document.querySelectorAll(".gene-steps i").forEach((marker, i) => marker.classList.toggle("active", i <= casStep));
+  document.querySelector("#genePrev").disabled = casStep === 0;
+  document.querySelector("#geneNext").disabled = casStep === casSteps.length - 1;
+}
+document.querySelector("#genePrev").addEventListener("click", () => { stopCas(); setCasStep(casStep - 1); });
+document.querySelector("#geneNext").addEventListener("click", () => { stopCas(); setCasStep(casStep + 1); });
+function stopCas() {
+  if (casTimer) { clearInterval(casTimer); casTimer = null; }
+  document.querySelector("#genePlay").textContent = "Play animation";
+}
+document.querySelector("#genePlay").addEventListener("click", event => {
+  const button = event.currentTarget;
+  if (casTimer) { stopCas(); return; }
+  if (casStep === casSteps.length - 1) setCasStep(0);
+  button.textContent = "Pause animation";
+  casTimer = setInterval(() => {
+    if (casStep >= casSteps.length - 1) { stopCas(); return; }
+    setCasStep(casStep + 1);
+    if (casStep >= casSteps.length - 1) { stopCas(); button.textContent = "Replay animation"; }
+  }, 1750);
+});
+</script>
+</body>
+</html>
