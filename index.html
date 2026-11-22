@@ -93,6 +93,40 @@ input[type=range]{width:100%;accent-color:var(--green);margin:13px 0 3px}
 .gene-actions{justify-content:space-between}
 .gene-safety{margin-top:16px;background:#fff8e9;border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:13px 16px;color:#6e6043;font-size:13px}
 footer{padding:20px 24px;text-align:center;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
+
+.scaffold-section{margin-top:24px}
+.scaffold-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:stretch}
+.scaffold-visual{position:relative;background:#eff4ef;border-radius:18px;padding:20px;overflow:hidden}
+.scaffold-visual-label{display:block;color:var(--muted);font-size:10px;letter-spacing:.11em;font-weight:800;margin-bottom:10px}
+.scaffold-svg{display:block;width:100%;height:auto;min-height:210px}
+.scaffold-frame{fill:#fffefa;stroke:#cddbd0;stroke-width:2}
+.scaffold-fiber{stroke:#397766;stroke-linecap:round;opacity:.87;transition:stroke-width .45s ease,opacity .35s ease}
+.scaffold-fiber-shadow{stroke:#a7c7b4;stroke-linecap:round;opacity:.52;transition:stroke-width .45s ease}
+.scaffold-cell{fill:#4b8a74;stroke:#d4eee0;stroke-width:3}
+.scaffold-nutrient{fill:#6b91a8;stroke:#d7e6ed;stroke-width:2;animation:nutrientFloat 2.8s ease-in-out infinite alternate}
+.scaffold-nutrient:nth-child(2n){animation-delay:.45s}
+.scaffold-caption{font:700 11px ui-sans-serif,system-ui,sans-serif;fill:#5b7470}
+.scaffold-legend{display:flex;flex-wrap:wrap;gap:9px 17px;margin-top:10px;color:var(--muted);font-size:11px}
+.scaffold-legend-item{display:flex;align-items:center;gap:7px}
+.scaffold-key-fiber{width:18px;height:4px;background:#397766;border-radius:4px}
+.scaffold-key-cell{width:10px;height:10px;border-radius:50%;background:#4b8a74;border:2px solid #d4eee0}
+.scaffold-key-nutrient{width:9px;height:9px;border-radius:50%;background:#6b91a8;border:2px solid #d7e6ed}
+.scaffold-controls{padding:19px;background:#f5f7f2;border:1px solid var(--line);border-radius:18px}
+.scaffold-controls h3{font-size:16px;margin:0 0 4px}
+.scaffold-controls .dial:first-of-type{padding-top:8px}
+.scaffold-controls .dial{padding:13px 0}
+.scaffold-range-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:-2px}
+.scaffold-output-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}
+.scaffold-metric{padding:12px 13px;background:#fffefa;border:1px solid var(--line);border-radius:14px;min-width:0}
+.scaffold-metric span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:750}
+.scaffold-metric strong{display:block;margin-top:4px;font-size:13px}
+.scaffold-explanation{margin-top:15px;background:#eaf3ec;border-radius:15px;padding:15px 17px;min-height:70px}
+.scaffold-explanation strong{display:block;font-size:14px;margin-bottom:2px}
+.scaffold-explanation p{margin:0;color:var(--muted);font-size:13px}
+.scaffold-reset{margin-top:13px}
+@keyframes nutrientFloat{from{transform:translateY(-2px);opacity:.55}to{transform:translateY(5px);opacity:1}}
+@media(max-width:760px){.scaffold-grid{grid-template-columns:1fr}.scaffold-output-grid{grid-template-columns:1fr 1fr 1fr}.scaffold-visual{padding:16px}}
+@media(max-width:420px){.scaffold-output-grid{grid-template-columns:1fr}.scaffold-metric{display:flex;align-items:center;justify-content:space-between;gap:10px}.scaffold-metric strong{margin:0;text-align:right}}
 @media(max-width:760px){header{padding:16px 20px}main{padding:40px 18px 52px}.grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.panel{padding:20px}.visual{min-height:240px}.phase-track{grid-template-columns:repeat(2,1fr)}.gene-layout{grid-template-columns:1fr}.gene-heading{display:block}.fictional-tag{margin-top:10px}.gene-scene{min-height:235px}.dna-ladder{top:96px}.cas-complex{width:112px}.layer span{font-size:9px;left:8px}}
 @media(max-width:420px){.dna-row{font-size:9px}.phase-button{padding:11px 10px}.layer span{font-size:8px}.layer.top span{font-size:8px}.gene-scene{padding-left:12px;padding-right:12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -145,6 +179,59 @@ footer{padding:20px 24px;text-align:center;color:var(--muted);font-size:12px;bor
 </div>
 <div class="phase-summary" id="phaseSummary" aria-live="polite"><span class="tag" id="phaseKicker">Stage 3 of 4</span><strong id="phaseTitle"> Proliferation</strong><p id="phaseText">Fibroblasts from the dermis move into the wound and deposit extracellular matrix. Other cells, including keratinocytes, help cover the surface.</p></div>
 <div class="phase-actions"><button class="button" type="button" id="phasePlay">Play timeline</button><span class="small-note">Conceptual sequence only; timing and outcomes vary, and stages overlap.</span></div>
+</section>
+
+<section class="panel scaffold-section" aria-labelledby="scaffoldDesignHeading">
+<div class="tag">Build a scaffold</div>
+<h2 id="scaffoldDesignHeading">Explore scaffold structure</h2>
+<p class="sub">Adjust a close-up schematic of a porous scaffold and see how its openings, strands, and nutrient supply change.</p>
+<div class="scaffold-grid">
+<div class="scaffold-visual">
+<span class="scaffold-visual-label">WOUND BED · SCAFFOLD CLOSE-UP</span>
+<svg class="scaffold-svg" viewBox="0 0 600 300" role="img" aria-labelledby="scaffoldSvgTitle scaffoldSvgDesc">
+<title id="scaffoldSvgTitle">Schematic porous tissue scaffold</title>
+<desc id="scaffoldSvgDesc">A lattice of scaffold strands with illustrative fibroblasts and nutrient particles in the openings.</desc>
+<defs><clipPath id="scaffoldClip"><rect x="66" y="44" width="468" height="206" rx="17"></rect></clipPath></defs>
+<rect class="scaffold-frame" x="66" y="44" width="468" height="206" rx="17"></rect>
+<g id="scaffoldFibers" clip-path="url(#scaffoldClip)"></g>
+<g id="scaffoldNutrients" clip-path="url(#scaffoldClip)"></g>
+<g id="scaffoldCells" clip-path="url(#scaffoldClip)"></g>
+<text class="scaffold-caption" x="69" y="278">Openings represent pores · drawing is not to scale</text>
+</svg>
+<div class="scaffold-legend">
+<span class="scaffold-legend-item"><i class="scaffold-key-fiber" aria-hidden="true"></i> Scaffold strands</span>
+<span class="scaffold-legend-item"><i class="scaffold-key-cell" aria-hidden="true"></i> Fibroblasts (illustrative)</span>
+<span class="scaffold-legend-item"><i class="scaffold-key-nutrient" aria-hidden="true"></i> Nutrient particles (illustrative)</span>
+</div>
+</div>
+<div class="scaffold-controls">
+<h3>Change the design conditions</h3>
+<p class="hint">These controls change the schematic, not a real material prediction.</p>
+<div class="dial">
+<div class="dial-head"><label for="poreSpace">Pore opening</label><output id="poreSpaceOut" for="poreSpace">Medium</output></div>
+<input id="poreSpace" type="range" min="0" max="100" value="50">
+<div class="scaffold-range-labels"><span>Tighter</span><span>Wider</span></div>
+</div>
+<div class="dial">
+<div class="dial-head"><label for="strandThickness">Strand thickness</label><output id="strandThicknessOut" for="strandThickness">Medium</output></div>
+<input id="strandThickness" type="range" min="0" max="100" value="45">
+<div class="scaffold-range-labels"><span>Thin</span><span>Thick</span></div>
+</div>
+<div class="dial">
+<div class="dial-head"><label for="nutrientInput">Nutrient supply</label><output id="nutrientInputOut" for="nutrientInput">Medium</output></div>
+<input id="nutrientInput" type="range" min="0" max="100" value="60">
+<div class="scaffold-range-labels"><span>Low</span><span>High</span></div>
+</div>
+<button class="button secondary scaffold-reset" type="button" id="scaffoldReset">Reset example</button>
+</div>
+</div>
+<div class="scaffold-output-grid" aria-live="polite">
+<div class="scaffold-metric"><span>Visible pathways</span><strong id="cellPathOutput">Mixed openings</strong></div>
+<div class="scaffold-metric"><span>Material in drawing</span><strong id="supportOutput">Medium strands</strong></div>
+<div class="scaffold-metric"><span>Particle input</span><strong id="nutrientOutput">Medium supply</strong></div>
+</div>
+<div class="scaffold-explanation" aria-live="polite"><strong id="scaffoldTakeawayTitle">A middle example</strong><p id="scaffoldTakeaway">This drawing shows one combination of open space, strand thickness, and nutrient supply. It does not identify a best scaffold design.</p></div>
+<div class="note"><strong>Important:</strong> actual scaffold performance depends on material composition, pore connectivity, mechanical properties, the cells involved, and the tissue being studied. More open pores or thicker strands do not guarantee a better outcome.</div>
 </section>
 
 <section class="panel gene-section" aria-labelledby="geneHeading">
@@ -261,6 +348,83 @@ document.querySelector("#phasePlay").addEventListener("click", event => {
   }, 2100);
 });
 setPhase("proliferation", false);
+
+
+const poreSpace = document.querySelector("#poreSpace");
+const strandThickness = document.querySelector("#strandThickness");
+const nutrientInput = document.querySelector("#nutrientInput");
+const svgNS = "http://www.w3.org/2000/svg";
+function makeSvg(tag, attributes) {
+  const element = document.createElementNS(svgNS, tag);
+  Object.entries(attributes).forEach(([key,value]) => element.setAttribute(key, value));
+  return element;
+}
+function rangeWord(value, low, middle, high) {
+  if (value < 34) return low;
+  if (value > 67) return high;
+  return middle;
+}
+function renderScaffold() {
+  const pores = Number(poreSpace.value);
+  const strands = Number(strandThickness.value);
+  const supply = Number(nutrientInput.value);
+  const gap = 23 + pores * .39;
+  const width = 2.4 + strands * .075;
+  const fiberGroup = document.querySelector("#scaffoldFibers");
+  const nutrientGroup = document.querySelector("#scaffoldNutrients");
+  const cellGroup = document.querySelector("#scaffoldCells");
+  fiberGroup.replaceChildren();
+  nutrientGroup.replaceChildren();
+  cellGroup.replaceChildren();
+
+  for (let x = 66; x <= 534; x += gap) {
+    fiberGroup.appendChild(makeSvg("line",{x1:x,y1:44,x2:x,y2:250,class:"scaffold-fiber", "stroke-width":width}));
+  }
+  for (let y = 44; y <= 250; y += gap) {
+    fiberGroup.appendChild(makeSvg("line",{x1:66,y1:y,x2:534,y2:y,class:"scaffold-fiber-shadow","stroke-width":width}));
+  }
+
+  const nutrientCount = Math.round(1 + supply / 9);
+  for (let i = 0; i < nutrientCount; i++) {
+    const x = 94 + ((i * 67 + 23) % 410);
+    const y = 61 + ((i * 43 + 11) % 170);
+    nutrientGroup.appendChild(makeSvg("circle",{cx:x,cy:y,r:4,class:"scaffold-nutrient"}));
+  }
+  const cells = [[145,102],[272,168],[410,112],[476,204]];
+  cells.forEach(([cx,cy]) => cellGroup.appendChild(makeSvg("circle",{cx,cy,r:7,class:"scaffold-cell"})));
+
+  const poreWord = rangeWord(pores,"Tight openings","Mixed openings","Wide openings");
+  const strandWord = rangeWord(strands,"Thin strands","Medium strands","Thick strands");
+  const supplyWord = rangeWord(supply,"Low supply","Medium supply","High supply");
+  document.querySelector("#poreSpaceOut").value = rangeWord(pores,"Tighter","Medium","Wider");
+  document.querySelector("#strandThicknessOut").value = rangeWord(strands,"Thin","Medium","Thick");
+  document.querySelector("#nutrientInputOut").value = rangeWord(supply,"Low","Medium","High");
+  document.querySelector("#cellPathOutput").textContent = poreWord;
+  document.querySelector("#supportOutput").textContent = strandWord;
+  document.querySelector("#nutrientOutput").textContent = supplyWord;
+
+  let title, message;
+  if (pores < 34 && strands > 67) {
+    title = "A compact, strand-heavy example";
+    message = "The schematic has tighter openings and thicker strands. It emphasizes visible material and shows narrower pathways; this is not a measured cell or nutrient response.";
+  } else if (pores > 67 && strands < 34) {
+    title = "A more open, fine-strand example";
+    message = "The schematic has wider openings and thinner strands. It shows more open space, but real support and transport depend on the material and full scaffold architecture.";
+  } else if (pores > 67 && strands > 67) {
+    title = "Wide openings with thick strands";
+    message = "The drawing combines wider pores with thick strands. Real designs must consider how geometry and material properties work together.";
+  } else {
+    title = "A combination of scaffold features";
+    message = "This drawing shows one combination of pore openings, strand thickness, and nutrient input. It does not identify a best scaffold design.";
+  }
+  document.querySelector("#scaffoldTakeawayTitle").textContent = title;
+  document.querySelector("#scaffoldTakeaway").textContent = message;
+}
+[poreSpace,strandThickness,nutrientInput].forEach(control=>control.addEventListener("input",renderScaffold));
+document.querySelector("#scaffoldReset").addEventListener("click",()=>{
+  poreSpace.value=50; strandThickness.value=45; nutrientInput.value=60; renderScaffold();
+});
+renderScaffold();
 
 const casSteps = [
   {title:"Cas9 carries a guide",text:"Cas9 is a DNA-cutting enzyme. A guide RNA associates with it and can base-pair with a matching DNA region."},
